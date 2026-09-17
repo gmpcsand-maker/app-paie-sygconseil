@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>App Paie Bénin</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8f0fe 100%);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            width: 500px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            color: #1a73e8;
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+
+        .header .sous-titre {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .header .datetime {
+            color: #1a73e8;
+            font-size: 13px;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 500px;
+        }
+
+        .btn-nav {
+            flex: 1;
+            padding: 10px;
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 0;
+            width: auto;
+        }
+
+        .btn-nav:hover { background-color: #1a73e8; color: white; }
+        .btn-nav.actif { background-color: #1a73e8; color: white; }
+
+        /* Carte */
+        .carte {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 500px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .carte h1 {
+            color: #1a73e8;
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #1a73e8;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Formulaire */
+        .formulaire {
+            background-color: #e8f0fe;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .recherche { margin-bottom: 12px; }
+
+        .tri {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-tri {
+            flex: 1;
+            padding: 8px;
+            background-color: #e8f0fe;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .btn-tri:hover { background-color: #1a73e8; color: white; }
+        .btn-tri.actif { background-color: #1a73e8; color: white; }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input#recherche { border: 2px solid #1a73e8; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        button:hover { background-color: #1558b0; }
+        .btn-csv { background-color: #2e7d32; margin-top: 8px; }
+        .btn-csv:hover { background-color: #1b5e20; }
+
+        /* Employés */
+        .employe {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .employe.en-edition {
+            border-left: 4px solid #f57c00;
+            background-color: #fff8e1;
+        }
+
+        .employe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .employe h3 { color: #1a73e8; }
+        .employe p { margin: 4px 0; font-size: 14px; }
+        .net { font-weight: bold; color: #2e7d32; font-size: 15px; }
+        .boutons-employe { display: flex; gap: 6px; }
+
+        .btn-modifier {
+            background-color: #f57c00;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .btn-modifier:hover { background-color: #e65100; }
+
+        .btn-supprimer {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .btn-supprimer:hover { background-color: #b71c1c; }
+
+        .zone-edition {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ffe082;
+        }
+
+        .btn-enregistrer {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .btn-enregistrer:hover { background-color: #1b5e20; }
+
+        .erreur { color: red; font-size: 14px; margin-top: 8px; }
+
+        .info-stockage {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .aucun-resultat {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* Total */
+        .total {
+            background: linear-gradient(135deg, #1a73e8, #1558b0);
+            color: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .total h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .total p { margin: 6px 0; font-size: 14px; }
+
+        .total .total-net {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.4);
+        }
+
+        /* À propos */
+        .apropos-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .apropos-section p { margin: 6px 0; font-size: 14px; color: #444; }
+
+        .badge {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 4px 4px 4px 0;
+        }
+
+        /* Statistiques */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-carte {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .stat-valeur { font-size: 22px; font-weight: bold; color: #1a73e8; }
+        .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+        .barre-container { margin-bottom: 10px; }
+        .barre-nom { font-size: 13px; color: #444; margin-bottom: 4px; }
+
+        .barre-fond {
+            background-color: #e8f0fe;
+            border-radius: 6px;
+            height: 20px;
+            width: 100%;
+        }
+
+        .barre-remplie {
+            background: linear-gradient(90deg, #1a73e8, #1558b0);
+            border-radius: 6px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            color: white;
+            font-size: 11px;
+            transition: width 0.5s;
+        }
+
+        /* Footer */
+        .footer {
+            width: 500px;
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 12px;
+            padding-bottom: 20px;
+        }
+
+        .footer a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>💼 App Paie Bénin</h1>
+        <div class="sous-titre">Gestion de paie conforme aux normes béninoises 2024-2025</div>
+        <div class="datetime" id="datetime"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <button class="btn-nav actif" id="nav-employes" onclick="allerPage('employes')">👥 Employés</button>
+        <button class="btn-nav" id="nav-stats" onclick="allerPage('stats')">📊 Statistiques</button>
+        <button class="btn-nav" id="nav-apropos" onclick="allerPage('apropos')">ℹ️ À propos</button>
+    </div>
+
+    <!-- Page Employés -->
+    <div class="carte" id="page-employes">
+        <h1>👥 Liste des Employés</h1>
+
+        <div class="recherche">
+            <label>🔍 Rechercher un employé :</label>
+            <input type="text" id="recherche" placeholder="Tapez un nom..." oninput="afficherListe()">
+        </div>
+
+        <div class="tri">
+            <button class="btn-tri" id="btn-nom" onclick="trier('nom')">🔤 Nom A→Z</button>
+            <button class="btn-tri" id="btn-asc" onclick="trier('asc')">💰 Salaire ↑</button>
+            <button class="btn-tri" id="btn-desc" onclick="trier('desc')">💰 Salaire ↓</button>
+        </div>
+
+        <div class="formulaire">
+            <label>Nom de l'employé :</label>
+            <input type="text" id="nom" placeholder="ex. Kofi Mensah">
+            <label>Salaire brut (FCFA) :</label>
+            <input type="number" id="salaire" placeholder="ex. 150000">
+            <button onclick="ajouterEmploye()">➕ Ajouter l'employé</button>
+            <button class="btn-csv" onclick="exporterCSV()">📥 Exporter en CSV</button>
+            <p class="erreur" id="erreur"></p>
+        </div>
+
+        <p class="info-stockage" id="info-stockage"></p>
+        <div id="liste"></div>
+        <div id="total"></div>
+    </div>
+
+    <!-- Page Statistiques -->
+    <div class="carte" id="page-stats" style="display:none;">
+        <h1>📊 Statistiques</h1>
+        <div id="contenu-stats"></div>
+    </div>
+
+    <!-- Page À propos -->
+    <div class="carte" id="page-apropos" style="display:none;">
+        <h1>ℹ️ À propos</h1>
+
+        <div class="apropos-section">
+            <h2>📱 L'application</h2>
+            <p><strong>Nom :</strong> App Paie Bénin</p>
+            <p><strong>Version :</strong> 1.0</p>
+            <p><strong>Description :</strong> Application de gestion de paie conforme aux normes béninoises 2024-2025</p>
+            <p><strong>Développeur :</strong> SANDA Martin Pierre</p>
+            <p><strong>Téléphone :</strong> +229 0197867764</p>
+        </div>
+
+        <div class="apropos-section">
+            <h2>⚙️ Normes appliquées</h2>
+            <p>📌 SMIG : 52 000 FCFA</p>
+            <p>📌 CNSS salarié : 3,6%</p>
+            <p>📌 Abattement forfaitaire : 20% (plafonné à 100 000 FCFA)</p>
+            <p>📌 IPR par tranches progressives</p>
+        </div>
+
+        <div class="apropos-section">
+            <h2>📊 Barème IPR</h2>
+            <p>0 à 60 000 FCFA → 0%</p>
+            <p>60 001 à 150 000 FCFA → 10%</p>
+            <p>150 001 à 250 000 FCFA → 15%</p>
+            <p>250 001 à 500 000 FCFA → 19%</p>
+            <p>500 001 à 1 000 000 FCFA → 24%</p>
+            <p>Plus de 1 000 000 FCFA → 28%</p>
+        </div>
+
+        <div class="apropos-section">
+            <h2>🛠️ Technologies</h2>
+            <span class="badge">HTML</span>
+            <span class="badge">CSS</span>
+            <span class="badge">JavaScript</span>
+            <span class="badge">localStorage</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        💼 App Paie Bénin v1.0 — Développé par SANDA Martin Pierre<br>
+        📞 +229 0197867764
+    </div>
+
+    <script>
+        let employes = [];
+        let data = localStorage.getItem("employes");
+        if (data) {
+            employes = JSON.parse(data);
+        } else {
+            employes = [
+                { nom: "Kofi Mensah",   salaire: 80000  },
+                { nom: "Aïcha Traoré",  salaire: 150000 },
+                { nom: "Jean Agbodjan", salaire: 300000 }
+            ];
+            sauvegarder();
+        }
+
+        let indexEnEdition = -1;
+
+        // Horloge en temps réel
+        function mettreAJourDatetime() {
+            let maintenant = new Date();
+            let date = maintenant.toLocaleDateString("fr-FR");
+            let heure = maintenant.toLocaleTimeString("fr-FR");
+            document.getElementById("datetime").innerHTML = "📅 " + date + " — ⏰ " + heure;
+        }
+        mettreAJourDatetime();
+        setInterval(mettreAJourDatetime, 1000);
+
+        function allerPage(page) {
+            document.getElementById("page-employes").style.display = "none";
+            document.getElementById("page-stats").style.display    = "none";
+            document.getElementById("page-apropos").style.display  = "none";
+
+            document.getElementById("nav-employes").classList.remove("actif");
+            document.getElementById("nav-stats").classList.remove("actif");
+            document.getElementById("nav-apropos").classList.remove("actif");
+
+            document.getElementById("page-" + page).style.display = "block";
+            document.getElementById("nav-" + page).classList.add("actif");
+
+            if (page === "stats") afficherStats();
+        }
+
+        function afficherStats() {
+            if (employes.length === 0) {
+                document.getElementById("contenu-stats").innerHTML =
+                    "<p class='aucun-resultat'>Aucun employé enregistré 👥</p>";
+                return;
+            }
+
+            let totalBrut  = 0;
+            let totalNet   = 0;
+            let maxSalaire = employes[0].salaire;
+            let minSalaire = employes[0].salaire;
+            let nomMax     = employes[0].nom;
+            let nomMin     = employes[0].nom;
+
+            for (let i = 0; i < employes.length; i++) {
+                totalBrut = totalBrut + employes[i].salaire;
+                totalNet  = totalNet  + calculerNet(employes[i].salaire).net;
+
+                if (employes[i].salaire > maxSalaire) {
+                    maxSalaire = employes[i].salaire;
+                    nomMax     = employes[i].nom;
+                }
+                if (employes[i].salaire < minSalaire) {
+                    minSalaire = employes[i].salaire;
+                    nomMin     = employes[i].nom;
+                }
+            }
+
+            let moyenne = Math.round(totalBrut / employes.length);
+
+            let texte =
+                "<div class='stats-grid'>" +
+                "<div class='stat-carte'><div class='stat-valeur'>" + employes.length + "</div><div class='stat-label'>👥 Employés</div></div>" +
+                "<div class='stat-carte'><div class='stat-valeur'>" + moyenne.toLocaleString() + "</div><div class='stat-label'>💵 Salaire moyen (FCFA)</div></div>" +
+                "<div class='stat-carte'><div class='stat-valeur'>" + maxSalaire.toLocaleString() + "</div><div class='stat-label'>📈 Plus haut — " + nomMax + "</div></div>" +
+                "<div class='stat-carte'><div class='stat-valeur'>" + minSalaire.toLocaleString() + "</div><div class='stat-label'>📉 Plus bas — " + nomMin + "</div></div>" +
+                "</div>";
+
+            texte = texte + "<h2>📊 Salaires par employé</h2>";
+
+            for (let i = 0; i < employes.length; i++) {
+                let pourcent = Math.round((employes[i].salaire / maxSalaire) * 100);
+                let net      = calculerNet(employes[i].salaire).net;
+                texte = texte +
+                    "<div class='barre-container'>" +
+                    "<div class='barre-nom'>" + employes[i].nom + " — Brut : " + employes[i].salaire.toLocaleString() + " FCFA | Net : " + net.toLocaleString() + " FCFA</div>" +
+                    "<div class='barre-fond'>" +
+                    "<div class='barre-remplie' style='width:" + pourcent + "%'>" + pourcent + "%</div>" +
+                    "</div>" +
+                    "</div>";
+            }
+
+            document.getElementById("contenu-stats").innerHTML = texte;
+        }
+
+        function sauvegarder() {
+            localStorage.setItem("employes", JSON.stringify(employes));
+        }
+
+        function trier(type) {
+            document.getElementById("btn-nom").classList.remove("actif");
+            document.getElementById("btn-asc").classList.remove("actif");
+            document.getElementById("btn-desc").classList.remove("actif");
+            document.getElementById("btn-" + type).classList.add("actif");
+
+            if (type === "nom") {
+                employes.sort(function(a, b) {
+                    if (a.nom < b.nom) return -1;
+                    if (a.nom > b.nom) return 1;
+                    return 0;
+                });
+            } else if (type === "asc") {
+                employes.sort(function(a, b) { return a.salaire - b.salaire; });
+            } else if (type === "desc") {
+                employes.sort(function(a, b) { return b.salaire - a.salaire; });
+            }
+            sauvegarder();
+            afficherListe();
+        }
+
+        function calculerNet(brut) {
+            let cnss       = brut * 0.036;
+            let abattement = Math.min(brut * 0.20, 100000);
+            let revenu     = brut - cnss - abattement;
+            let ipr = 0;
+            if (revenu <= 60000) { ipr = 0; }
+            else if (revenu <= 150000) { ipr = (revenu - 60000) * 0.10; }
+            else if (revenu <= 250000) { ipr = (90000 * 0.10) + ((revenu - 150000) * 0.15); }
+            else if (revenu <= 500000) { ipr = (90000 * 0.10) + (100000 * 0.15) + ((revenu - 250000) * 0.19); }
+            else if (revenu <= 1000000) { ipr = (90000 * 0.10) + (100000 * 0.15) + (250000 * 0.19) + ((revenu - 500000) * 0.24); }
+            else { ipr = (90000 * 0.10) + (100000 * 0.15) + (250000 * 0.19) + (500000 * 0.24) + ((revenu - 1000000) * 0.28); }
+            return {
+                cnss: Math.round(cnss),
+                ipr:  Math.round(ipr),
+                net:  Math.round(brut - cnss - ipr)
+            };
+        }
+
+        function activerEdition(index) {
+            indexEnEdition = index;
+            afficherListe();
+        }
+
+        function enregistrerModification(index) {
+            let nouveauSalaire = parseFloat(document.getElementById("salaire-edit-" + index).value);
+            if (isNaN(nouveauSalaire) || nouveauSalaire < 52000) {
+                alert("⚠️ Salaire minimum : 52 000 FCFA !");
+                return;
+            }
+            employes[index].salaire = nouveauSalaire;
+            indexEnEdition = -1;
+            sauvegarder();
+            afficherListe();
+        }
+
+        function supprimerEmploye(index) {
+            let nom = employes[index].nom;
+            if (confirm("Supprimer " + nom + " ?")) {
+                employes.splice(index, 1);
+                indexEnEdition = -1;
+                sauvegarder();
+                afficherListe();
+            }
+        }
+
+        function afficherListe() {
+            let recherche = document.getElementById("recherche").value.toLowerCase();
+            let employesFiltres = employes.filter(function(e) {
+                return e.nom.toLowerCase().includes(recherche);
+            });
+
+            let texte     = "";
+            let totalBrut = 0;
+            let totalCnss = 0;
+            let totalIpr  = 0;
+            let totalNet  = 0;
+
+            if (employesFiltres.length === 0) {
+                texte = "<p class='aucun-resultat'>Aucun employé trouvé 🔍</p>";
+            } else {
+                for (let i = 0; i < employesFiltres.length; i++) {
+                    let nom    = employesFiltres[i].nom;
+                    let brut   = employesFiltres[i].salaire;
+                    let result = calculerNet(brut);
+                    let index  = employes.indexOf(employesFiltres[i]);
+
+                    totalBrut = totalBrut + brut;
+                    totalCnss = totalCnss + result.cnss;
+                    totalIpr  = totalIpr  + result.ipr;
+                    totalNet  = totalNet  + result.net;
+
+                    let zoneEdition   = "";
+                    let classeEdition = "";
+                    if (indexEnEdition === index) {
+                        classeEdition = " en-edition";
+                        zoneEdition =
+                            "<div class='zone-edition'>" +
+                            "<label>Nouveau salaire brut (FCFA) :</label>" +
+                            "<input type='number' id='salaire-edit-" + index + "' value='" + brut + "'>" +
+                            "<button class='btn-enregistrer' onclick='enregistrerModification(" + index + ")'>💾 Enregistrer</button>" +
+                            "</div>";
+                    }
+
+                    texte = texte +
+                        "<div class='employe" + classeEdition + "'>" +
+                        "<div class='employe-header'>" +
+                        "<h3>👤 " + nom + "</h3>" +
+                        "<div class='boutons-employe'>" +
+                        "<button class='btn-modifier' onclick='activerEdition(" + index + ")'>M</button>" +
+                        "<button class='btn-supprimer' onclick='supprimerEmploye(" + index + ")'>🗑️</button>" +
+                        "</div>" +
+                        "</div>" +
+                        "<p>Salaire brut : " + brut.toLocaleString() + " FCFA</p>" +
+                        "<p>CNSS (3,6%) : -" + result.cnss.toLocaleString() + " FCFA</p>" +
+                        "<p>IPR : -" + result.ipr.toLocaleString() + " FCFA</p>" +
+                        "<p class='net'>💰 Net : " + result.net.toLocaleString() + " FCFA</p>" +
+                        zoneEdition +
+                        "</div>";
+                }
+            }
+
+            let texteTotal = "";
+            if (employesFiltres.length > 0) {
+                texteTotal =
+                    "<div class='total'>" +
+                    "<h3>📊 Récapitulatif général</h3>" +
+                    "<p>👥 Nombre d'employés : " + employesFiltres.length + "</p>" +
+                    "<p>💵 Masse salariale : " + totalBrut.toLocaleString() + " FCFA</p>" +
+                    "<p>📉 Total CNSS : -" + totalCnss.toLocaleString() + " FCFA</p>" +
+                    "<p>📉 Total IPR : -" + totalIpr.toLocaleString() + " FCFA</p>" +
+                    "<p class='total-net'>💰 Total Net : " + totalNet.toLocaleString() + " FCFA</p>" +
+                    "</div>";
+            }
+
+            document.getElementById("liste").innerHTML     = texte;
+            document.getElementById("total").innerHTML     = texteTotal;
+            document.getElementById("info-stockage").innerHTML =
+                "💾 " + employes.length + " employé(s) sauvegardé(s)";
+        }
+
+        function ajouterEmploye() {
+            let nom     = document.getElementById("nom").value;
+            let salaire = parseFloat(document.getElementById("salaire").value);
+
+            if (nom === "") {
+                document.getElementById("erreur").innerHTML = "⚠️ Entrez un nom !";
+                return;
+            }
+            if (isNaN(salaire) || salaire < 52000) {
+                document.getElementById("erreur").innerHTML = "⚠️ Salaire minimum : 52 000 FCFA !";
+                return;
+            }
+            for (let i = 0; i < employes.length; i++) {
+                if (employes[i].nom.toLowerCase() === nom.toLowerCase()) {
+                    document.getElementById("erreur").innerHTML = "⚠️ Cet employé existe déjà !";
+                    return;
+                }
+            }
+            employes.push({ nom: nom, salaire: salaire });
+            sauvegarder();
+            document.getElementById("nom").value     = "";
+            document.getElementById("salaire").value = "";
+            document.getElementById("erreur").innerHTML = "";
+            afficherListe();
+        }
+
+        function exporterCSV() {
+            if (employes.length === 0) {
+                alert("Aucun employé à exporter !");
+                return;
+            }
+            let contenu = "Nom;Salaire Brut;CNSS;IPR;Salaire Net\n";
+            for (let i = 0; i < employes.length; i++) {
+                let nom    = employes[i].nom;
+                let brut   = employes[i].salaire;
+                let result = calculerNet(brut);
+                contenu = contenu +
+                    nom + ";" +
+                    brut + ";" +
+                    result.cnss + ";" +
+                    result.ipr + ";" +
+                    result.net + "\n";
+            }
+            let blob = new Blob(["\uFEFF" + contenu], { type: "text/csv;charset=utf-8;" });
+            let url  = URL.createObjectURL(blob);
+            let lien = document.createElement("a");
+            lien.href     = url;
+            lien.download = "paie_benin.csv";
+            lien.click();
+        }
+
+        afficherListe();
+    </script>
+</body>
+</html>
